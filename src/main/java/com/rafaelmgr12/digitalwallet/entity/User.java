@@ -8,7 +8,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "users_email_unique", columnNames = "email"),
+                @UniqueConstraint(name = "users_cpf_unique", columnNames = "cpf")
+        }
+)
 public class User {
 
     @Id
