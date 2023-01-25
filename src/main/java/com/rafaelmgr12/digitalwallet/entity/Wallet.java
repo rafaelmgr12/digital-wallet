@@ -4,45 +4,38 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "users_email_unique", columnNames = "email"),
-                @UniqueConstraint(name = "users_cpf_unique", columnNames = "cpf")
-        }
-)
-public class User {
-
+@Table(name = "wallets")
+public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(length =16)
     private UUID id;
 
-    private String name;
-    private String email;
-    private String cpf;
+    private BigDecimal amount;
+
     @Column(updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
-    @OneToOne(mappedBy  = "user")
-    private Wallet wallet;
-
-    public User(UUID id, String name, String email, String cpf, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.cpf = cpf;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+    public Wallet() {
     }
 
-    public User() {
+    public Wallet(UUID id, BigDecimal amount, LocalDateTime createdAt, LocalDateTime updatedAt, User user) {
+        this.id = id;
+        this.amount = amount;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.user = user;
     }
 
     public UUID getId() {
@@ -53,28 +46,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -91,5 +68,13 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
