@@ -1,6 +1,5 @@
 package com.rafaelmgr12.digitalwallet.service;
 
-import com.rafaelmgr12.digitalwallet.config.ModelMapperConfiguration;
 import com.rafaelmgr12.digitalwallet.dto.WalletDTO;
 import com.rafaelmgr12.digitalwallet.entity.User;
 import com.rafaelmgr12.digitalwallet.entity.Wallet;
@@ -11,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class WalletService {
@@ -23,6 +24,8 @@ public class WalletService {
     @Autowired
     private ModelMapper mapper;
 
+
+
     public WalletDTO createWalletByCPF(WalletDTO walletDTO, String cpf) {
         User user = userRepository.findByCpf(cpf);
         Wallet wallet = mapper.map(walletDTO, Wallet.class);
@@ -31,24 +34,26 @@ public class WalletService {
         return mapper.map(wallet, WalletDTO.class);
     }
 
-    public WalletDTO createWalletbyEmail(WalletDTO walletDTO, String email) {
-        User user = userRepository.findByEmail(email);
+    public WalletDTO createWalletByUserId(WalletDTO walletDTO, String userId) {
+        User user = userRepository.findById(UUID.fromString(userId)).orElse(null);
+
+        Wallet checkIsWalletExist = walletRepository.findByUserId(UUID.fromString(userId));
+        if (checkIsWalletExist != null) {
+            throw new RuntimeException("User has already a wallet exist");
+        }
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
         Wallet wallet = mapper.map(walletDTO, Wallet.class);
         wallet.setUser(user);
         walletRepository.save(wallet);
         return mapper.map(wallet, WalletDTO.class);
     }
 
-    public WalletDTO getWalletByCPF(String cpf) {
-        User user = userRepository.findByCpf(cpf);
-        Wallet wallet = walletRepository.findByUser(user);
-        return mapper.map(wallet, WalletDTO.class);
-    }
 
-    public BigDecimal getAmountByEmail(String email) {
-        User user = userRepository.findByEmail(email);
-        Wallet wallet = walletRepository.findByUser(user);
 
+    public BigDecimal getBalance(String id) {
+        Wallet wallet = walletRepository.findByUserId(UUID.fromString(id));
         return wallet.getAmount();
     }
 }
