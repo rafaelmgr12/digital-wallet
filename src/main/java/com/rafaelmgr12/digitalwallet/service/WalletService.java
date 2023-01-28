@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,15 +23,6 @@ public class WalletService {
     @Autowired
     private ModelMapper mapper;
 
-
-
-    public WalletDTO createWalletByCPF(WalletDTO walletDTO, String cpf) {
-        User user = userRepository.findByCpf(cpf);
-        Wallet wallet = mapper.map(walletDTO, Wallet.class);
-        wallet.setUser(user);
-        walletRepository.save(wallet);
-        return mapper.map(wallet, WalletDTO.class);
-    }
 
     public WalletDTO createWalletByUserId(WalletDTO walletDTO, String userId) {
         User user = userRepository.findById(UUID.fromString(userId)).orElse(null);
