@@ -6,16 +6,16 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public class WalletDTO {
-    private UUID uuid;
+    private UUID id;
     private BigDecimal amount;
     private User user;
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public BigDecimal getAmount() {
@@ -33,4 +33,5 @@ public class WalletDTO {
     public void setUser(User user) {
         this.user = user;
     }
+
 }
