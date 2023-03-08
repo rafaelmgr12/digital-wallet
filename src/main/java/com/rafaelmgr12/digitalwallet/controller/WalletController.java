@@ -2,6 +2,7 @@ package com.rafaelmgr12.digitalwallet.controller;
 
 import com.rafaelmgr12.digitalwallet.dto.WalletDTO;
 import com.rafaelmgr12.digitalwallet.service.WalletService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +26,7 @@ public class WalletController {
     }
 
 
+    @Transactional()
     @PostMapping("wallets/{userId}")
     public ResponseEntity<WalletDTO> createWallet(@PathVariable(value = "userId") String userId,@RequestBody @Validated WalletDTO walletDTO, UriComponentsBuilder uriBuilder) {
         WalletDTO wallet = walletService.createWalletByUserId(walletDTO, userId);
